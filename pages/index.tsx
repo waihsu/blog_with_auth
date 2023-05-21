@@ -1,44 +1,25 @@
+import PostFrom from "@/components/PostForm";
+
 import { useLogin } from "@/hooks/useLogin";
+import { Box } from "@mui/material";
 import { useSession } from "next-auth/react";
 
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const { data: session, status } = useSession();
+
+  const [base64, setBase64] = useState<string>("");
   const { getUser, createUser } = useLogin();
-
-  // const getUser = async (email: string) => {
-  //   const resp = await fetch(`/api/user?email=${email}`);
-  //   const data = await resp.json();
-  //   return data;
-  // };
-
-  // const createUser = async () => {
-  //   const email = session?.user?.email;
-  //   const name = session?.user?.name;
-  //   const profileImage = session?.user?.image;
-  //   const resp = await fetch("/api/user", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       email,
-  //       name,
-  //       profileImage,
-  //     }),
-  //   });
-  //   // const data = await resp.json();
-  // };
 
   useEffect(() => {
     const userData = async () => {
       if (status !== "loading" && session) {
         const data = await getUser(session?.user?.email as string);
-        console.log(data);
+        // console.log(data);
         if (data.messg === "user not found") {
           const createdUser = await createUser();
-          console.log("createdUser: ", createdUser);
+          // console.log("createdUser: ", createdUser);
         }
       }
     };
@@ -48,8 +29,12 @@ export default function Home() {
   if (status === "loading") return <p>Loading...</p>;
 
   return (
-    <div>
-      <h1>hello</h1>
-    </div>
+    <Box sx={{ maxWidth: 600, minHeight: "100vh", mx: "auto", border: 1 }}>
+      <PostFrom
+        base64={base64}
+        setBase64={setBase64}
+        profileImage={session?.user?.image as string}
+      />
+    </Box>
   );
 }

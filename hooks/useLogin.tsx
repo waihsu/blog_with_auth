@@ -1,7 +1,25 @@
 import { useSession } from "next-auth/react";
 
+interface User {
+  email: string;
+  password: string;
+}
+
 export const useLogin = () => {
   const { data: session } = useSession();
+
+  const login = async (user: User) => {
+    const resp = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    const data = await resp.json();
+    return data;
+  };
+
   const getUser = async (email: string) => {
     const resp = await fetch(`/api/user?email=${email}`);
     const data = await resp.json();
@@ -26,5 +44,5 @@ export const useLogin = () => {
     // const data = await resp.json();
   };
 
-  return { getUser, createUser };
+  return { getUser, createUser, login };
 };

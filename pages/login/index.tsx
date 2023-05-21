@@ -6,8 +6,31 @@ import Image from "next/image";
 import playStore from "../../public/playStore.png";
 import microsoft from "../../public/microsoft.png";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useLogin } from "@/hooks/useLogin";
+import { useRouter } from "next/router";
 
 const Login = () => {
+  const navigate = useRouter();
+  const [error, setError] = useState<string>("");
+  const [user, setUser] = useState({ email: "", password: "" });
+  const { login } = useLogin();
+
+  const onSubmit = async () => {
+    const result = await signIn("credentials", {
+      email: user.email,
+      password: user.password,
+      redirect: true,
+      callbackUrl: "/",
+    });
+    // const data = await login(user);
+    // // console.log(data);
+    // setError(data.messg);
+    // if (data.messg === "success") {
+    //   navigate.push("/");
+    // }
+  };
+
   return (
     <Box>
       <Box
@@ -28,35 +51,41 @@ const Login = () => {
         <Box sx={{ display: "flex", flexDirection: "column", mt: 6, gap: 4 }}>
           <TextField
             id="outlined-basic"
-            label="Phone number, username, or email"
+            value={user.email}
+            label="Email"
             variant="outlined"
-            //   onChange={(e) => {
-            //     setUser({ ...user, email: e.target.value });
-            //   }}
+            onChange={(e) => {
+              setUser({ ...user, email: e.target.value });
+            }}
           />
           <TextField
             id="outlined-basic"
+            value={user.password}
             label="Password"
             variant="outlined"
             type="password"
-            //   onChange={(e) => {
-            //     setUser({ ...user, password: e.target.value });
-            //   }}
+            onChange={(e) => {
+              setUser({ ...user, password: e.target.value });
+            }}
           />
-          <Button variant="contained">Log in</Button>
+          <Button onClick={onSubmit} variant="contained">
+            Log in
+          </Button>
 
-          {/* {error && (
-              <Typography
-                sx={{
-                  textAlign: "center",
-                  color: "red",
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  mt: 4,
-                }}>
-                {error}
-              </Typography>
-            )} */}
+          {error ? (
+            <Typography
+              sx={{
+                textAlign: "center",
+                color: "red",
+                fontSize: 20,
+                fontWeight: "bold",
+                mt: 4,
+              }}>
+              {error}
+            </Typography>
+          ) : (
+            ""
+          )}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", mt: 3, gap: 4 }}>
           <Divider sx={{ width: "40%" }} />
@@ -82,7 +111,11 @@ const Login = () => {
             <GitHubIcon />
             <Typography>Log in With Github</Typography>
           </Button>
-          <Button variant="contained">
+          <Button
+            onClick={() => {
+              signIn("facebook", { callbackUrl: "http://localhost:3000" });
+            }}
+            variant="contained">
             <FacebookIcon />
             <Typography>Log in With Facebook</Typography>
           </Button>

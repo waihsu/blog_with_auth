@@ -7,43 +7,22 @@ import microsoft from "../../public/microsoft.png";
 import { useState } from "react";
 import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useSignUp } from "@/hooks/useSignup";
 
 const Signup = () => {
-  // const [user, setUser] = useState({
-  //   username: "",
-  //   email: "",
-  //   password: "",
-  // });
+  const [user, setUser] = useState({
+    username: "",
+    name: "",
+    email: "",
+    password: "",
+  });
 
-  // const [error, setError] = useState("");
-  // const [success, setSuccess] = useState("");
-
-  // const signup = async () => {
-  //   setError("");
-  //   setSuccess("");
-  //   const resp = await fetch("/api/auth/signup", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(user),
-  //   });
-  //   const data = await resp.json();
-  //   console.log(data);
-  //   if (!resp.ok) {
-  //     setError(data);
-  //   }
-  //   if (resp.ok) {
-  //     setSuccess(data);
-  //     setTimeout(() => {
-  //       redirect("/login");
-  //     }, 2000);
-  //   }
-  // };
+  const { signUpUser } = useSignUp();
 
   const [messg, setMessg] = useState<string>("");
-  const signup = () => {
-    setMessg("You can only login with Github");
+  const signup = async () => {
+    const data = await signUpUser(user);
+    setMessg(data.messg);
   };
 
   return (
@@ -87,53 +66,55 @@ const Signup = () => {
             id="outlined-basic"
             label="Mobile Number or Email"
             variant="outlined"
-            // onChange={(evt) => {
-            //   setUser({ ...user, email: evt.target.value });
-            // }}
+            onChange={(evt) => {
+              setUser({ ...user, email: evt.target.value });
+            }}
           />
-          {/* <TextField
+          <TextField
             id="outlined-basic"
             label="Full Name"
             variant="outlined"
             onChange={(evt) => {
-              setUser({ ...user, fullname: evt.target.value });
+              setUser({ ...user, name: evt.target.value });
             }}
-          /> */}
+          />
           <TextField
             id="outlined-basic"
             label="Username"
             variant="outlined"
-            // onChange={(evt) => {
-            //   setUser({ ...user, username: evt.target.value });
-            // }}
+            onChange={(evt) => {
+              setUser({ ...user, username: evt.target.value });
+            }}
           />
           <TextField
             id="outlined-basic"
             label="Password"
             variant="outlined"
             type="password"
-            // onChange={(evt) => {
-            //   setUser({ ...user, password: evt.target.value });
-            // }}
+            onChange={(evt) => {
+              setUser({ ...user, password: evt.target.value });
+            }}
           />
           <Button onClick={signup} variant="contained">
             Sign up
           </Button>
+          <Box>
+            {messg ? (
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  color: "red",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  mt: 4,
+                }}>
+                {messg}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Box>
         </Box>
-        <div>
-          {messg && (
-            <Typography
-              sx={{
-                textAlign: "center",
-                color: "red",
-                fontSize: 20,
-                fontWeight: "bold",
-                mt: 4,
-              }}>
-              {messg}
-            </Typography>
-          )}
-        </div>
       </Box>
 
       <Box

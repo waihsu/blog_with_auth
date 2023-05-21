@@ -24,6 +24,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
+import { useRouter } from "next/router";
 
 const sidebarMenuItems = [
   { id: 1, label: "Home", icon: <HomeOutlinedIcon />, route: "/" },
@@ -50,9 +51,11 @@ const sidebarMenuItems = [
 
 const Navbar = () => {
   const { data: session } = useSession();
-
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
+  const router = useRouter();
+  const name = session?.user?.name as string;
+  const imageUrl = session?.user?.image as string;
 
   const handleClose = () => {
     setOpen(false);
@@ -114,10 +117,10 @@ const Navbar = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Photos
           </Typography>
-          {session && (
+          {session?.user && (
             <div>
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography>{session.user?.name}</Typography>
+                <Typography>{name}</Typography>
                 <IconButton
                   size="large"
                   aria-label="account of current user"
@@ -126,7 +129,7 @@ const Navbar = () => {
                   onClick={() => setOpen(true)}
                   color="inherit">
                   <img
-                    src={session.user?.image}
+                    src={imageUrl}
                     alt="user"
                     width={45}
                     height={45}
@@ -153,18 +156,22 @@ const Navbar = () => {
               </Menu>
             </div>
           )}
-          {!session && (
+          {!session?.user && (
             <Box>
-              <Link href="/login">
-                <Button sx={{ bgcolor: "forestgreen" }} variant="contained">
-                  Sign in
+              {router.pathname === "/login" ? (
+                <Link href="/signup">
+                  <Button sx={{ bgcolor: "firebrick" }} variant="contained">
+                    Sign up
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  onClick={() => signIn()}
+                  sx={{ bgcolor: "forestgreen" }}
+                  variant="contained">
+                  Log in
                 </Button>
-              </Link>
-              <Link href="/signup">
-                <Button sx={{ bgcolor: "firebrick" }} variant="contained">
-                  Sign up
-                </Button>
-              </Link>
+              )}
             </Box>
           )}
         </Toolbar>
