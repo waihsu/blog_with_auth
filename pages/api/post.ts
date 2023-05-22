@@ -1,9 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import prisma from "../../lib/prisma";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
-export default async function GET(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     res.status(401).json({ messg: "You must be logged in." });
@@ -12,11 +16,12 @@ export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
     // POST METHOD
     if (req.method === "POST") {
+      const blogPost = JSON.parse(req.body);
+      // console.log(blogPost);
       const post = await prisma.post.create({
-        data: req.body,
+        data: blogPost,
       });
-      res.status(200).json({ messg: "done", post });
-      return;
+      res.status(200).json({ messg: "done" });
     }
 
     // GET Method
@@ -33,12 +38,14 @@ export default async function GET(req: NextApiRequest, res: NextApiResponse) {
             email: posts[i].userEmail,
           },
         });
+
         userData.push(user);
       }
       res.status(200).json({ posts, userData });
     }
     res.status(200).json({ messg: "incorrect" });
   } catch (error) {
+    console.log(error);
     res.status(401).json({ error });
   }
 }

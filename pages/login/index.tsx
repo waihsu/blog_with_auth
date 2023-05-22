@@ -45,8 +45,8 @@ const Login = () => {
           border: 1,
           borderColor: "aquamarine",
         }}>
-        <Typography variant="h3" sx={{ textAlign: "center" }}>
-          Instagram
+        <Typography variant="h5" sx={{ textAlign: "center", fontWeight: 700 }}>
+          Created By Wai
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", mt: 6, gap: 4 }}>
           <TextField

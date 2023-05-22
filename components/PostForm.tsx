@@ -2,8 +2,9 @@ import { useDropzone } from "react-dropzone";
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import Image from "next/image";
-import CloseIcon from "@mui/icons-material/Close";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 // interface Base64 {
 //   base64: string;
@@ -12,16 +13,24 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 // }
 
 const PostFrom = ({
+  onSubmit,
+  sending,
+  setSending,
+  text,
+  setText,
   base64,
   setBase64,
   profileImage,
 }: {
+  sending: boolean;
+  setSending: (value: any) => void;
+  onSubmit: () => void;
+  text: string;
+  setText: (value: string) => void;
   base64: string;
   setBase64: (value: string) => void;
   profileImage: string;
 }) => {
-  const [text, setText] = useState<string>("");
-
   const dropPost = (files: File[]) => {
     const file = files[0];
     const reader = new FileReader();
@@ -43,12 +52,14 @@ const PostFrom = ({
   return (
     <Box
       sx={{
+        mt: 10,
         maxWidth: 350,
         display: "flex",
         mx: "auto",
         flexDirection: "column",
         alignItems: "center",
         border: 1,
+        py: 2,
       }}>
       <Box
         sx={{
@@ -56,7 +67,7 @@ const PostFrom = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          mb: 3,
+          my: 1,
           gap: 2,
         }}>
         <Box>
@@ -78,10 +89,12 @@ const PostFrom = ({
             mx: "auto",
             bgcolor: "red",
           }}>
-          <Box sx={{ position: "absolute", top: 4, right: 4 }}>
-            <CloseIcon />
+          <Box
+            onClick={() => setBase64("")}
+            sx={{ position: "absolute", top: 4, right: 4 }}>
+            <CloseOutlinedIcon sx={{ bgcolor: "red", color: "white" }} />
           </Box>
-          <img src={base64} style={{ width: "100%", height: "100%" }} />
+          <img src={base64} style={{ width: "100%", height: "80%" }} />
         </Box>
       ) : null}
 
@@ -97,7 +110,13 @@ const PostFrom = ({
           <input {...getInputProps()} />
           <InsertPhotoIcon />
         </Box>
-        <Button variant="outlined">Submit</Button>
+        <LoadingButton
+          onClick={onSubmit}
+          variant="contained"
+          size="small"
+          loading={sending}>
+          Post
+        </LoadingButton>
       </Box>
     </Box>
   );

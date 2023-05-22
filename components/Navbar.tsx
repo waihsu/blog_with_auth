@@ -4,12 +4,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import {
+  Avatar,
   Button,
   Divider,
   Drawer,
@@ -25,6 +25,7 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const sidebarMenuItems = [
   { id: 1, label: "Home", icon: <HomeOutlinedIcon />, route: "/" },
@@ -43,9 +44,9 @@ const sidebarMenuItems = [
 
   {
     id: 4,
-    label: "Settings",
+    label: "Setting",
     icon: <SettingsSuggestOutlinedIcon />,
-    route: "/settings",
+    route: "/setting",
   },
 ];
 
@@ -103,7 +104,7 @@ const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
             onClick={() => setOpenDrawer(true)}
@@ -115,7 +116,7 @@ const Navbar = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
+            Tesu Community
           </Typography>
           {session?.user && (
             <div>
@@ -128,13 +129,7 @@ const Navbar = () => {
                   aria-haspopup="true"
                   onClick={() => setOpen(true)}
                   color="inherit">
-                  <img
-                    src={imageUrl}
-                    alt="user"
-                    width={45}
-                    height={45}
-                    style={{ borderRadius: "50%" }}
-                  />
+                  <Avatar src={imageUrl} />
                 </IconButton>
               </Box>
               <Menu

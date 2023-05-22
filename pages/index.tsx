@@ -1,19 +1,54 @@
+import NewFeeds from "@/components/NewFeeds";
 import PostFrom from "@/components/PostForm";
+import { useGetNewFeed } from "@/hooks/useGetNewFeed";
 
 import { useLogin } from "@/hooks/useLogin";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { Post, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession({ required: true });
 
-  const [base64, setBase64] = useState<string>("");
+  //hook
   const { getUser, createUser } = useLogin();
+  const { getNewFeeds } = useGetNewFeed();
+
+  const [key, setKey] = useState<number>(0);
+  const email = session?.user?.email;
+  const [base64, setBase64] = useState<string>("");
+  const [text, setText] = useState<string>("");
+  const [sending, setSending] = useState(false);
+
+  //newFeed
+  const [newFeed, setNewFeed] = useState<Array<Post>>([]);
+  const [feedUserData, setFeedUserData] = useState<Array<User>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const post = async () => {
+    setSending(true);
+    const resp = await fetch("/api/post", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/josn",
+      },
+      body: JSON.stringify({
+        body: text,
+        userEmail: email,
+        image: base64,
+      }),
+    });
+    const data = await resp.json();
+    setSending(false);
+    if (data.messg === "done") {
+      setKey(key + 1);
+    }
+  };
 
   useEffect(() => {
-    const userData = async () => {
+    const loginUserData = async () => {
       if (status !== "loading" && session) {
         const data = await getUser(session?.user?.email as string);
         // console.log(data);
@@ -21,20 +56,44 @@ export default function Home() {
           const createdUser = await createUser();
           // console.log("createdUser: ", createdUser);
         }
+        const feedData = await getNewFeeds();
+        setNewFeed(feedData.posts);
+        setFeedUserData(feedData.userData);
+        setLoading(false);
       }
     };
-    userData();
+    loginUserData();
   }, [status, session]);
 
   if (status === "loading") return <p>Loading...</p>;
 
   return (
     <Box sx={{ maxWidth: 600, minHeight: "100vh", mx: "auto", border: 1 }}>
-      <PostFrom
-        base64={base64}
-        setBase64={setBase64}
-        profileImage={session?.user?.image as string}
-      />
+      <Box>
+        <PostFrom
+          key={key}
+          text={text}
+          setText={setText}
+          sending={sending}
+          setSending={setSending}
+          onSubmit={post}
+          base64={base64}
+          setBase64={setBase64}
+          profileImage={session?.user?.image as string}
+        />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          newFeed.map((post, i) => (
+            <NewFeeds
+              key={post.id}
+              userData={feedUserData[i]}
+              post={newFeed[i]}
+              userEmail={session.user?.email as string}
+            />
+          ))
+        )}
+      </Box>
     </Box>
   );
 }

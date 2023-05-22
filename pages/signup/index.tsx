@@ -8,6 +8,7 @@ import { useState } from "react";
 import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useSignUp } from "@/hooks/useSignup";
+import FacebookIcon from "@mui/icons-material/Facebook";
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -38,13 +39,20 @@ const Signup = () => {
           border: 1,
           borderColor: "aquamarine",
         }}>
-        <Typography variant="h3" sx={{ textAlign: "center" }}>
-          No Name
+        <Typography variant="h5" sx={{ fontWeight: 700, textAlign: "center" }}>
+          TESU COMMUNITY
         </Typography>
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           Sign up to see photos and videos from your friends.
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 2,
+            mt: 4,
+          }}>
           <Button
             onClick={() =>
               signIn("github", { callbackUrl: "http://localhost:3000/" })
@@ -53,6 +61,14 @@ const Signup = () => {
             variant="contained">
             <GitHubIcon />
             <Typography>Log in With Github</Typography>
+          </Button>
+          <Button
+            onClick={() => {
+              signIn("facebook", { callbackUrl: "http://localhost:3000" });
+            }}
+            variant="contained">
+            <FacebookIcon />
+            <Typography>Log in With Facebook</Typography>
           </Button>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", mt: 3, gap: 4 }}>
