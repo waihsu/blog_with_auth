@@ -47,6 +47,17 @@ export default function Home() {
     }
   };
 
+  const getFeed = async () => {
+    const resp = await fetch("/api/post");
+    if (resp.status === 200) {
+      const data = await resp.json();
+      console.log(data);
+      setNewFeed(data.posts);
+      setFeedUserData(data.userData);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const loginUserData = async () => {
       if (status !== "loading" && session) {
@@ -56,10 +67,7 @@ export default function Home() {
           const createdUser = await createUser();
           // console.log("createdUser: ", createdUser);
         }
-        const feedData = await getNewFeeds();
-        setNewFeed(feedData.posts);
-        setFeedUserData(feedData.userData);
-        setLoading(false);
+        await getFeed();
       }
     };
     loginUserData();
