@@ -4,7 +4,7 @@ import GithubProvider from "next-auth/providers/github";
 import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../../../lib/prisma";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
@@ -40,12 +40,6 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (user) {
-          const isCorrectPassword = await bcrypt.compare(
-            credentials?.password as string,
-            user.password
-          );
-
-          if (!isCorrectPassword) return null;
           // Any object returned will be saved in `user` property of the JWT
           return user;
         } else {
