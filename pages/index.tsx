@@ -1,6 +1,7 @@
 import NewFeeds from "@/components/NewFeeds";
 import PostFrom from "@/components/PostForm";
 import { useGetNewFeed } from "@/hooks/useGetNewFeed";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useLogin } from "@/hooks/useLogin";
 import { Box, Typography } from "@mui/material";
@@ -11,10 +12,11 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const { data: session, status } = useSession({ required: true });
+  const [progress, setProgress] = useState(10);
 
   //hook
   const { getUser, createUser } = useLogin();
-  const { getNewFeeds } = useGetNewFeed();
+  // const { getNewFeeds } = useGetNewFeed();
 
   const [key, setKey] = useState<number>(0);
   const email = session?.user?.email;
@@ -49,7 +51,9 @@ export default function Home() {
   };
 
   const getFeed = async () => {
+    setLoading(true);
     const resp = await fetch("/api/newfeed");
+
     if (resp.status === 200) {
       const data = await resp.json();
       setLoading(false);
@@ -91,7 +95,16 @@ export default function Home() {
           profileImage={session?.user?.image as string}
         />
         {loading ? (
-          <p>Loading...</p>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 10,
+            }}>
+            <CircularProgress />
+            <p>Please Wait...</p>
+          </Box>
         ) : (
           newFeed.map((post, i) => (
             <NewFeeds
