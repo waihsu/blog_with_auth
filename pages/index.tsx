@@ -53,7 +53,7 @@ export default function Home() {
     if (resp.status === 200) {
       const data = await resp.json();
       setLoading(false);
-      console.log(data);
+      // console.log(data);
       setNewFeed(data.posts);
       setFeedUserData(data.userData);
     }
