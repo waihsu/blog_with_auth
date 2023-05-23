@@ -2,8 +2,19 @@ import { Box, Typography } from "@mui/material";
 
 const Profile = () => {
   return (
-    <Box>
-      <Typography>Profile Page</Typography>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
+      <Typography variant="h3">This Feature unavailable now </Typography>
+      <Typography variant="h5" sx={{ color: "red" }}>
+        Comming Soon...
+      </Typography>
     </Box>
   );
 };

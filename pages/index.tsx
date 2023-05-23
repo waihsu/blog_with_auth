@@ -41,33 +41,34 @@ export default function Home() {
       }),
     });
     const data = await resp.json();
-    setSending(false);
+
     if (data.messg === "done") {
+      setSending(false);
       setKey(key + 1);
     }
   };
 
   const getFeed = async () => {
-    const resp = await fetch("/api/post");
+    const resp = await fetch("/api/newfeed");
     if (resp.status === 200) {
       const data = await resp.json();
+      setLoading(false);
       console.log(data);
       setNewFeed(data.posts);
       setFeedUserData(data.userData);
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     const loginUserData = async () => {
       if (status !== "loading" && session) {
+        await getFeed();
         const data = await getUser(session?.user?.email as string);
         // console.log(data);
         if (data.messg === "user not found") {
           const createdUser = await createUser();
           // console.log("createdUser: ", createdUser);
         }
-        await getFeed();
       }
     };
     loginUserData();
