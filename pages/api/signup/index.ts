@@ -1,15 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../lib/prisma";
+import prisma from "../../../lib/prisma";
 import bcrypt from "bcrypt";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { email, name, username, password } = req.body;
+  const { email, name, password } = req.body;
 
   if (req.method === "POST") {
-    if (!email || !name || !username || !password)
+    if (!email || !name || !password)
       return res.status(401).json({ messg: "All fields need to fill" });
 
     //hashedPassword
@@ -24,7 +24,6 @@ export default async function handler(
       const user = await prisma.user.create({
         data: {
           email: email,
-          username: username,
           name: name,
           password: hashedPassword,
         },

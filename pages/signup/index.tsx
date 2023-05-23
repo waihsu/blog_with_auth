@@ -12,7 +12,6 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 
 const Signup = () => {
   const [user, setUser] = useState({
-    username: "",
     name: "",
     email: "",
     password: "",
@@ -55,7 +54,9 @@ const Signup = () => {
           }}>
           <Button
             onClick={() =>
-              signIn("github", { callbackUrl: "http://localhost:3000/" })
+              signIn("github", {
+                callbackUrl: "https://blog-with-auth-eta.vercel.app/",
+              })
             }
             sx={{ bgcolor: "black" }}
             variant="contained">
@@ -64,7 +65,9 @@ const Signup = () => {
           </Button>
           <Button
             onClick={() => {
-              signIn("facebook", { callbackUrl: "http://localhost:3000" });
+              signIn("facebook", {
+                callbackUrl: "https://blog-with-auth-eta.vercel.app/",
+              });
             }}
             variant="contained">
             <FacebookIcon />
@@ -88,20 +91,20 @@ const Signup = () => {
           />
           <TextField
             id="outlined-basic"
-            label="Full Name"
+            label="Name"
             variant="outlined"
             onChange={(evt) => {
               setUser({ ...user, name: evt.target.value });
             }}
           />
-          <TextField
+          {/* <TextField
             id="outlined-basic"
             label="Username"
             variant="outlined"
             onChange={(evt) => {
               setUser({ ...user, username: evt.target.value });
             }}
-          />
+          /> */}
           <TextField
             id="outlined-basic"
             label="Password"

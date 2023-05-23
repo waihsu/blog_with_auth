@@ -104,7 +104,9 @@ const Login = () => {
           }}>
           <Button
             onClick={() =>
-              signIn("github", { callbackUrl: "http://localhost:3000" })
+              signIn("github", {
+                callbackUrl: "https://blog-with-auth-eta.vercel.app",
+              })
             }
             sx={{ bgcolor: "black" }}
             variant="contained">
@@ -113,7 +115,9 @@ const Login = () => {
           </Button>
           <Button
             onClick={() => {
-              signIn("facebook", { callbackUrl: "http://localhost:3000" });
+              signIn("facebook", {
+                callbackUrl: "https://blog-with-auth-eta.vercel.app",
+              });
             }}
             variant="contained">
             <FacebookIcon />
